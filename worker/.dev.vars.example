@@ -1,0 +1,2 @@
+SUBJECT_HMAC_SECRET=replace-with-a-long-random-development-secret
+SESSION_SECRET=replace-with-an-independent-long-random-secret
