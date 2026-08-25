@@ -1,0 +1,7 @@
+INSERT OR REPLACE INTO questions(id,topic,question_text,context_text,opens_at,closes_at,status) VALUES
+('q-energy','Energi & klimat','Bör Sverige bygga ny kärnkraft?','Veckans fråga om svensk energipolitik.',datetime('now','-1 day'),datetime('now','+7 days'),'open'),
+('q-school','Skola & utbildning','Bör mobiltelefoner vara förbjudna under hela skoldagen i grundskolan?','Veckans fråga om studiero och mobiltelefoner.',datetime('now','-1 day'),datetime('now','+7 days'),'open'),
+('q-health','Vård & omsorg','Bör staten ta ett större ansvar för finansieringen av svensk sjukvård?','Veckans fråga om ansvar och finansiering.',datetime('now','-1 day'),datetime('now','+7 days'),'open'),
+('q-safety','Lag & trygghet','Bör fler mindre orter ha permanent lokal polisnärvaro?','Veckans fråga om lokal polisiär närvaro.',datetime('now','-1 day'),datetime('now','+7 days'),'open'),
+('q-economy','Ekonomi & arbete','Bör Sverige prioritera lägre statsskuld framför nya offentliga investeringar?','Veckans fråga om offentliga finanser.',datetime('now','-1 day'),datetime('now','+7 days'),'open'),
+('q-democracy','Demokrati & samhälle','Bör fler nationella sakfrågor avgöras genom rådgivande folkomröstningar?','Veckans fråga om demokratiskt deltagande.',datetime('now','-1 day'),datetime('now','+7 days'),'open');
