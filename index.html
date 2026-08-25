@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="sv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f4f6f8">
+  <title>DinRöst – Sverige tycker</title>
+  <meta name="description" content="DinRöst är en oberoende digital plats där människor kan ta ställning i aktuella samhällsfrågor och se hur Sverige svarar.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap nav">
+    <a class="brand" href="#top" aria-label="DinRöst startsida"><span class="brand-mark">DR</span><span>DinRöst</span></a>
+    <nav aria-label="Huvudmeny"><a href="#fragor">Veckans frågor</a><a href="#resultat">Resultat</a><a href="#om">Om DinRöst</a></nav>
+    <button class="login">Logga in</button>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">OBEROENDE SAMHÄLLSOPINION</div>
+      <h1>Vad tycker Sverige?</h1>
+      <p class="lead">DinRöst gör det enkelt att ta ställning i aktuella samhällsfrågor – och lika enkelt att se hur andra svarar. Upp till åtta tydliga frågor varje vecka.</p>
+      <div class="hero-actions"><a class="primary" href="#fragor">Se veckans frågor</a><a class="secondary" href="#resultat">Utforska resultaten</a></div>
+      <p class="micro">En person. En röst per fråga. Resultat redovisas endast på aggregerad nivå.</p>
+    </div>
+    <aside class="status-card" aria-label="Veckans status">
+      <div class="status-top"><span>VECKA 35</span><span class="live-dot">ÖPPEN</span></div>
+      <strong>6</strong><span>aktuella frågor</span>
+      <hr>
+      <div class="stat-row"><div><b>184 327</b><small>avgivna röster</small></div><div><b>42 816</b><small>deltagare</small></div></div>
+      <p>Demodata i prototypen</p>
+    </aside>
+  </div>
+</section>
+
+<section id="fragor" class="section">
+  <div class="wrap">
+    <div class="section-head"><div><span class="kicker">VECKA 35</span><h2>Veckans frågor</h2><p>Nya sakfrågor publiceras löpande. Max åtta per vecka – tillräckligt få för att varje fråga ska få utrymme.</p></div><span class="counter">6 av 8</span></div>
+    <div class="question-list" id="questionList"></div>
+  </div>
+</section>
+
+<section id="resultat" class="section alt">
+  <div class="wrap">
+    <span class="kicker">ÖPPNA RESULTAT</span><h2>Se Sverige från fler håll</h2>
+    <p class="intro">Växla diagramtyp och bryt ned svaren. Prototypen visar hur resultat kan utforskas efter kön, ålder och geografi – från hela landet ned till kommunnivå när underlaget är tillräckligt stort.</p>
+    <div class="result-card">
+      <div class="result-title"><div><span class="topic">ENERGI</span><h3>Bör Sverige bygga ny kärnkraft?</h3><small id="sampleText">42 816 svar · Hela Sverige</small></div><div class="chart-switch"><button class="active" data-chart="bar">Staplar</button><button data-chart="pie">Cirkel</button></div></div>
+      <div class="filters">
+        <label>Kön<select id="gender"><option value="all">Alla</option><option value="women">Kvinnor</option><option value="men">Män</option></select></label>
+        <label>Ålder<select id="age"><option value="all">Alla åldrar</option><option value="18-29">18–29</option><option value="30-49">30–49</option><option value="50-64">50–64</option><option value="65+">65+</option></select></label>
+        <label>Geografi<select id="geo"><option value="sweden">Hela Sverige</option><option value="stockholm">Stockholms län</option><option value="varmland">Värmlands län</option><option value="amal">Åmåls kommun</option><option value="karlstad">Karlstads kommun</option></select></label>
+      </div>
+      <div class="chart-area"><div id="barChart" class="bars"></div><div id="pieChart" class="pie-wrap hidden"><div class="pie" id="pie"></div><div class="legend" id="legend"></div></div></div>
+      <div class="result-note">Filter visas endast när gruppen är tillräckligt stor för att skydda deltagarnas anonymitet. Resultaten är inte viktade i denna prototyp.</div>
+    </div>
+  </div>
+</section>
+
+<section id="om" class="section why">
+  <div class="wrap why-grid">
+    <div><span class="kicker">VARFÖR DINRÖST?</span><h2>Ett löpande samtal mellan valen</h2></div>
+    <div class="why-copy"><p>Demokratin avgörs i allmänna val. Men människors uppfattningar uppstår inte bara vart fjärde år. DinRöst är tänkt som ett komplement: en gemensam plats där många människor kontinuerligt kan ta ställning i konkreta frågor och direkt se det samlade resultatet.</p><p>Om deltagandet blir stort kan plattformen fungera som en <strong>inofficiell form av direktdemokratiskt temperaturmått</strong> – inte som ett juridiskt beslut och inte som en ersättning för val, utan som en transparent bild av vad deltagarna faktiskt tycker.</p></div>
+  </div>
+  <div class="wrap principles">
+    <article><span>01</span><h3>En person, en röst</h3><p>Identiteten verifieras, men åsikten ska inte behöva bli offentlig.</p></article>
+    <article><span>02</span><h3>Sakfrågan i centrum</h3><p>Korta, neutralt formulerade frågor med tydlig bakgrund och källor.</p></article>
+    <article><span>03</span><h3>Resultat som går att förstå</h3><p>Se helheten eller jämför grupper och geografiska nivåer med tydliga diagram.</p></article>
+    <article><span>04</span><h3>Öppen metod</h3><p>Metod, urval, svarstal och begränsningar ska framgå så att siffrorna inte lovar mer än de kan bära.</p></article>
+  </div>
+</section>
+
+<section class="method-section">
+  <div class="wrap method"><div><span class="kicker">TROVÄRDIGHET FÖRST</span><h2>En röstplattform måste tåla granskning.</h2></div><p>För att DinRöst ska bli relevant räcker det inte med många svar. Plattformen behöver verifierad unik identitet, skyddad rösthemlighet, publicerad metodik, tydliga svarstal och försiktighet med små grupper. Skillnaden mellan <em>vad deltagarna tycker</em> och <em>vad hela befolkningen statistiskt kan sägas tycka</em> ska alltid vara tydlig.</p></div>
+</section>
+</main>
+
+<footer><div class="wrap footer"><div><b>DinRöst</b><span>En tjänst från Röstverket</span></div><div>Oberoende · Transparent · Saklig</div><div>© 2026 DinRöst</div></div></footer>
+<script src="app.js"></script>
+</body>
+</html>
