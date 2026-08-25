@@ -1,0 +1,18 @@
+name = "dinrost-api"
+main = "src/index.js"
+compatibility_date = "2026-08-01"
+
+[vars]
+APP_ORIGIN = "https://dinröst.eu"
+MIN_PUBLIC_GROUP = "50"
+AUTH_PROVIDER = "mock"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "dinrost-prod"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+# Production secrets (set with wrangler secret put, never commit):
+# SESSION_SECRET
+# SUBJECT_HMAC_SECRET
+# BANKID_API_KEY / BANKID_CERT material when provider is activated
