@@ -1,1 +1,18 @@
-{"name":"dinrost-api","private":true,"scripts":{"dev":"wrangler dev","deploy":"wrangler deploy","db:init":"wrangler d1 execute dinrost-prod --remote --file=./schema.sql","db:seed":"wrangler d1 execute dinrost-prod --remote --file=./seed.sql"},"devDependencies":{"wrangler":"^4.0.0"}}
+{
+  "name": "dinrost-api",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:init": "wrangler d1 execute dinrost-prod --remote --file=./schema.sql",
+    "db:seed": "wrangler d1 execute dinrost-prod --remote --file=./seed.sql",
+    "test": "node --test test/*.test.js",
+    "research:init": "node scripts/research.mjs init",
+    "research:draft": "node scripts/research.mjs draft",
+    "research:release": "node scripts/research.mjs release"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  },
+  "type": "module"
+}

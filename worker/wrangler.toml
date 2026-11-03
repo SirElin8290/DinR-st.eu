@@ -5,7 +5,9 @@ compatibility_date = "2026-08-01"
 [vars]
 APP_ORIGIN = "https://dinröst.eu"
 MIN_PUBLIC_GROUP = "50"
-AUTH_PROVIDER = "mock"
+AUTH_PROVIDER = "disabled"
+ENVIRONMENT = "production"
+RESEARCH_COLLECTION_ENABLED = "false"
 
 [[d1_databases]]
 binding = "DB"

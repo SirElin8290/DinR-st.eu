@@ -1,0 +1,181 @@
+{
+  "status": "draft",
+  "method": {
+    "id": "self-recruited-v1",
+    "sampling": "self_recruited_non_probability",
+    "mode": "web",
+    "population": "Deltagare från 16 år som själva väljer att delta; ingen befolkningsrepresentativitet utlovas.",
+    "recruitment_channels": [
+      "dinpuls",
+      "political_group",
+      "university",
+      "public_event",
+      "direct",
+      "unknown"
+    ],
+    "verification": "Per svar: självrapporterad, e-postverifierad, identitetsverifierad eller mock. E-post bevisar inte identitet.",
+    "demographics": "Ögonblicksbild vid svar. Ålder och kön enligt dokumenterad källa; kommun är självrapporterad om inget annat styrkts.",
+    "weighting": "none",
+    "uncertainty": "Ingen konventionell felmarginal för sannolikhetsurval redovisas.",
+    "nonresponse": "Inbjudna och exponerade är okända; svarsfrekvens kan inte beräknas. Vet inte är ett svar; obesvarat är inte nej.",
+    "comparison": "Upprepade tvärsnitt av deltagare; ingen individpanel och inga belagda befolkningsförändringar.",
+    "option_order": "fixed",
+    "question_order": "fixed",
+    "language": "sv-SE",
+    "collection_timezone": "Europe/Stockholm"
+  },
+  "questions": [
+    {
+      "id": "topic-1-v1",
+      "category": "Energi & klimat",
+      "wording": "Bör Sverige bygga nya kärnkraftsreaktorer?",
+      "options": [
+        {
+          "id": "yes",
+          "label": "Ja"
+        },
+        {
+          "id": "no",
+          "label": "Nej"
+        },
+        {
+          "id": "unsure",
+          "label": "Vet inte / ingen uppfattning"
+        }
+      ]
+    },
+    {
+      "id": "topic-2-v1",
+      "category": "Skola & utbildning",
+      "wording": "Bör användning av mobiltelefoner vara förbjuden för elever under hela skoldagen i grundskolan, med undantag för undervisning och särskilda behov?",
+      "options": [
+        {
+          "id": "yes",
+          "label": "Ja"
+        },
+        {
+          "id": "no",
+          "label": "Nej"
+        },
+        {
+          "id": "unsure",
+          "label": "Vet inte / ingen uppfattning"
+        }
+      ]
+    },
+    {
+      "id": "topic-3-v1",
+      "category": "Vård & omsorg",
+      "wording": "Bör staten ta över regionernas ansvar för att finansiera hälso- och sjukvården?",
+      "options": [
+        {
+          "id": "yes",
+          "label": "Ja"
+        },
+        {
+          "id": "no",
+          "label": "Nej"
+        },
+        {
+          "id": "unsure",
+          "label": "Vet inte / ingen uppfattning"
+        }
+      ]
+    },
+    {
+      "id": "topic-4-v1",
+      "category": "Lag & trygghet",
+      "wording": "Bör antalet bemannade polisstationer i Sverige öka?",
+      "options": [
+        {
+          "id": "yes",
+          "label": "Ja"
+        },
+        {
+          "id": "no",
+          "label": "Nej"
+        },
+        {
+          "id": "unsure",
+          "label": "Vet inte / ingen uppfattning"
+        }
+      ]
+    },
+    {
+      "id": "topic-5-v1",
+      "category": "Ekonomi & arbete",
+      "wording": "Bör det statliga stödet till arbetsmarknadsutbildning öka?",
+      "options": [
+        {
+          "id": "yes",
+          "label": "Ja"
+        },
+        {
+          "id": "no",
+          "label": "Nej"
+        },
+        {
+          "id": "unsure",
+          "label": "Vet inte / ingen uppfattning"
+        }
+      ]
+    },
+    {
+      "id": "topic-6-v1",
+      "category": "Demokrati & samhälle",
+      "wording": "Bör Sverige genomföra fler nationella rådgivande folkomröstningar?",
+      "options": [
+        {
+          "id": "yes",
+          "label": "Ja"
+        },
+        {
+          "id": "no",
+          "label": "Nej"
+        },
+        {
+          "id": "unsure",
+          "label": "Vet inte / ingen uppfattning"
+        }
+      ]
+    },
+    {
+      "id": "topic-7-v1",
+      "category": "Bostäder & infrastruktur",
+      "wording": "Bör staten öka stödet till byggande av hyresbostäder?",
+      "options": [
+        {
+          "id": "yes",
+          "label": "Ja"
+        },
+        {
+          "id": "no",
+          "label": "Nej"
+        },
+        {
+          "id": "unsure",
+          "label": "Vet inte / ingen uppfattning"
+        }
+      ]
+    },
+    {
+      "id": "topic-8-v1",
+      "category": "Sverige & omvärlden",
+      "wording": "Bör EU:s medlemsländer fatta fler utrikespolitiska beslut med kvalificerad majoritet i stället för enhällighet?",
+      "options": [
+        {
+          "id": "yes",
+          "label": "Ja"
+        },
+        {
+          "id": "no",
+          "label": "Nej"
+        },
+        {
+          "id": "unsure",
+          "label": "Vet inte / ingen uppfattning"
+        }
+      ]
+    }
+  ]
+}

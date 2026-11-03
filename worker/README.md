@@ -1,5 +1,21 @@
 # DinRöst backend
 
+## Research architecture update, 2026-11-03
+
+The research implementation and its launch limitations are documented in
+[`../docs/research-architecture.md`](../docs/research-architecture.md).
+Use `npm test` with Node 24. Local schema/draft/review/open/close/release tools
+are in `scripts/research.mjs`; they never deploy or upload data.
+
+Production collection and mock authentication are disabled by default.
+Public research archives use frozen, reviewed aggregates, with no login required.
+The older live result/vote endpoints below are disabled outside development.
+The configuration still contains a placeholder D1 ID; no production deployment
+or end-to-end production verification has been performed.
+
+The descriptions below concern the original scaffold and must not be read as
+proof of verified identity, a deployed backend, or GDPR approval.
+
 Cloudflare Worker + D1 scaffold for the production voting service.
 
 ## Implemented
