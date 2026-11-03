@@ -26,15 +26,13 @@
   <p class="story-note">Oberoende i upplägget. Öppet med metoden. Varsamt med din information.</p>
   </div>
  </section>
- <section id="konto" class="entry-card" aria-labelledby="account-title">
-  <div class="card-topline"><span>DIN PLATS I SAMTALET</span><span class="card-index" aria-hidden="true">DR / 01</span></div>
-  <h2 id="account-title">Välkommen in.</h2><p class="card-intro">Ett konto. Dina perspektiv. En tydligare bild tillsammans.</p>
-  <div class="preview-notice" role="note"><span class="preview-dot" aria-hidden="true"></span><p><strong>Förhandsversion</strong>Registreringen har inte öppnat. Inga personuppgifter skickas eller sparas av DinRöst i den här vyn.</p></div>
-  <div class="account-tabs" role="tablist" aria-label="Välj kontoflöde">
-   <button type="button" role="tab" id="registerTab" aria-selected="true" aria-controls="registerPanel" tabindex="0">Skapa konto</button>
-   <button type="button" role="tab" id="loginTab" aria-selected="false" aria-controls="loginPanel" tabindex="-1">Logga in</button>
-  </div>
-  <section id="registerPanel" role="tabpanel" aria-labelledby="registerTab">
+ <section id="konto" class="entry-card-scene" aria-label="Inloggning och registrering">
+  <div class="auth-card-rotor">
+   <section id="registerPanel" class="entry-card auth-face auth-front" aria-labelledby="account-title">
+    <div class="card-topline"><span>DIN PLATS I SAMTALET</span><span class="card-index" aria-hidden="true">DR / 01</span></div>
+    <h2 id="account-title" tabindex="-1">Välkommen in.</h2><p class="card-intro">Ett konto. Dina perspektiv. En tydligare bild tillsammans.</p>
+    <div class="preview-notice" role="note"><span class="preview-dot" aria-hidden="true"></span><p><strong>Förhandsversion</strong>Registreringen har inte öppnat. Inga personuppgifter skickas eller sparas av DinRöst i den här vyn.</p></div>
+    <div class="account-tabs" aria-label="Välj kontoflöde"><button type="button" id="registerTab" aria-pressed="true" data-auth-face="register">Skapa konto</button><button type="button" id="loginTab" aria-pressed="false" aria-controls="loginPanel" data-auth-face="login">Logga in</button></div>
    <form id="registrationForm" onsubmit="return false" novalidate>
     <div class="field-pair">
      <div class="field"><label for="givenName">Förnamn</label><input id="givenName" autocomplete="given-name" maxlength="80" required placeholder="Ditt förnamn"></div>
@@ -48,16 +46,22 @@
     <p class="account-feedback" id="registerFeedback" role="status"></p>
    </form>
    <p class="account-footnote">E-postverifiering bekräftar e-postadressen. Personnummer och hemkommun är självrapporterade uppgifter tills de har verifierats separat.</p>
-  </section>
-  <section id="loginPanel" role="tabpanel" aria-labelledby="loginTab" hidden>
+    <div class="account-bottom"><span class="privacy-mark" aria-hidden="true">✓</span><p>Dina individuella svar visas inte offentligt.<br><a href="principer.html">Läs om integritet och metod</a></p></div>
+   </section>
+   <section id="loginPanel" class="entry-card auth-face auth-back" aria-labelledby="login-title" aria-hidden="true" inert>
+    <div class="card-topline"><span>DIN PLATS I SAMTALET</span><span class="card-index" aria-hidden="true">DR / 02</span></div>
+    <h2 id="login-title" tabindex="-1">Välkommen tillbaka.</h2><p class="card-intro">Fortsätt där du var. Ditt perspektiv behövs.</p>
+    <div class="preview-notice" role="note"><span class="preview-dot" aria-hidden="true"></span><p><strong>Förhandsversion</strong>Registreringen har inte öppnat. Inga personuppgifter skickas eller sparas av DinRöst i den här vyn.</p></div>
+    <div class="account-tabs" aria-label="Välj kontoflöde"><button type="button" id="backRegisterButton" aria-pressed="false" aria-controls="registerPanel" data-auth-face="register">Skapa konto</button><button type="button" id="backLoginButton" aria-pressed="true" data-auth-face="login">Logga in</button></div>
    <form id="loginForm" onsubmit="return false" novalidate>
     <div class="login-explanation"><h3>En länk. Sedan är du inne.</h3><p>Det planerade inloggningsflödet använder en tidsbegränsad länk till din e-postadress, så att du slipper komma ihåg ett lösenord.</p></div>
     <div class="field"><label for="loginEmail">E-postadress</label><input id="loginEmail" type="email" autocomplete="email" maxlength="254" required placeholder="du@exempel.se"></div>
     <button class="account-primary" id="loginButton" type="button" disabled>Skicka inloggningslänk <span aria-hidden="true">↗</span></button>
     <p class="account-feedback" id="loginFeedback" role="status"></p>
    </form>
-  </section>
-  <div class="account-bottom"><span class="privacy-mark" aria-hidden="true">✓</span><p>Dina individuella svar visas inte offentligt.<br><a href="principer.html">Läs om integritet och metod</a></p></div>
+    <div class="account-bottom"><span class="privacy-mark" aria-hidden="true">✓</span><p>Dina individuella svar visas inte offentligt.<br><a href="principer.html">Läs om integritet och metod</a></p></div>
+   </section>
+  </div>
  </section>
 </main>
 <section id="sa-fungerar-det" class="entry-method" aria-labelledby="method-title"><div class="method-heading"><span class="mini-label">SÅ FUNGERAR DINRÖST</span><h2 id="method-title">Ett litet bidrag.<br>En bild som växer.</h2></div><div class="method-steps"><article><span>01 / DELTA</span><h3>Åtta frågor. Varje vecka.</h3><p>Du väljer vilka frågor du vill svara på. Veckans frågor stänger söndag 23.59.59, svensk tid.</p></article><article><span>02 / UTFORSKA</span><h3>Se fler perspektiv.</h3><p>Jämför publicerade resultat över tid och mellan kommuner. Små grupper skyddas.</p></article><article><span>03 / FÖRSTÅ</span><h3>Metoden är en del av svaret.</h3><p>Resultaten beskriver deltagarna på DinRöst. De är inte automatiskt representativa för hela Sverige.</p></article></div></section>

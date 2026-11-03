@@ -13,10 +13,29 @@ for(const category of CATEGORIES){
 const byName=new Map(Object.entries(MUNICIPALITIES).map(([code,g])=>[g.name.toLocaleLowerCase('sv'),{code,...g}]));
 const options=document.querySelector('#municipalityOptions');
 Object.values(MUNICIPALITIES).sort((a,b)=>a.name.localeCompare(b.name,'sv')).forEach(g=>{const option=document.createElement('option');option.value=g.name;options.append(option);});
-const tabs=[document.querySelector('#registerTab'),document.querySelector('#loginTab')],panels=[document.querySelector('#registerPanel'),document.querySelector('#loginPanel')];
-function activateTab(index,focus=false){tabs.forEach((t,i)=>{t.setAttribute('aria-selected',String(i===index));t.tabIndex=i===index?0:-1;panels[i].hidden=i!==index;});if(focus)tabs[index].focus();}
-tabs.forEach((tab,i)=>{tab.addEventListener('click',()=>activateTab(i));tab.addEventListener('keydown',event=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){event.preventDefault();activateTab(event.key==='Home'?0:event.key==='End'?1:1-i,true);}});});
-if(new URLSearchParams(location.search).get('mode')==='login')activateTab(1);
+const scene=document.querySelector('#konto'),rotor=scene.querySelector('.auth-card-rotor');
+const panels=[document.querySelector('#registerPanel'),document.querySelector('#loginPanel')];
+const motion=window.matchMedia('(prefers-reduced-motion: reduce)');
+let activeFace=0,focusTimer;
+function resizeCard(){scene.style.height=panels[activeFace].offsetHeight+'px';}
+function activateTab(index,focus=false,updateURL=true){
+ clearTimeout(focusTimer);
+ if(panels[1-index].contains(document.activeElement))document.activeElement.blur();
+ activeFace=index;
+ panels.forEach((panel,i)=>{panel.inert=i!==index;panel.setAttribute('aria-hidden',String(i!==index));});
+ scene.classList.toggle('is-login',index===1);resizeCard();
+ if(updateURL){const url=new URL(location.href);if(index===1)url.searchParams.set('mode','login');else url.searchParams.delete('mode');history.replaceState(null,'',url);}
+ if(focus){focusTimer=setTimeout(()=>{document.querySelector(index===1?'#backLoginButton':'#registerTab').focus({preventScroll:true});},motion.matches?0:660);}
+}
+scene.querySelectorAll('[data-auth-face]').forEach(button=>{
+ button.addEventListener('click',()=>activateTab(button.dataset.authFace==='login'?1:0,true));
+ button.addEventListener('keydown',event=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(event.key)){event.preventDefault();activateTab(event.key==='Home'?0:event.key==='End'?1:1-activeFace,true);}});
+});
+document.querySelector('.entry-login-shortcut')?.addEventListener('click',event=>{event.preventDefault();activateTab(1,true);scene.scrollIntoView({behavior:motion.matches?'auto':'smooth',block:'start'});});
+activateTab(new URLSearchParams(location.search).get('mode')==='login'?1:0,false,false);
+scene.classList.add('auth-ready');resizeCard();
+const cardObserver=new ResizeObserver(resizeCard);panels.forEach(panel=>cardObserver.observe(panel));
+window.addEventListener('resize',resizeCard);
 
 const pnr=document.querySelector('#personalNumber'),pnrError=document.querySelector('#personalError'),age=document.querySelector('#derivedAge'),gender=document.querySelector('#derivedGender');
 const feedback=document.querySelector('#registerFeedback');
