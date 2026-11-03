@@ -123,3 +123,13 @@ node scripts/export-public.mjs LOCAL.sqlite ../data/research-releases
 Exportören kontrollerar policy, geografiversion, kontrollsummor och småcellsgränser före filskrivning. Den exporterar endast frysta aggregerade publiceringar och rättelsenotiser. Återkallanden tar bort uttaget ur index och ersätter dess statiska fil med en återkallandenotis. Kopior och historiska Git-objekt hos andra kan inte dras tillbaka; därför måste exportens anonymitets- och publiceringsprövning vara klar före första uppladdningen. Konton, deltagandekvitton och individuella svar exporteras aldrig.
 
 Officiell geografikälla: https://www.scb.se/hitta-statistik/regional-statistik-och-kartor/regionala-indelningar/lan-och-kommuner/lan-och-kommuner-i-kodnummerordning/
+
+## Startsida och kategorimoduler, 2026-11-03
+
+Startsidan har en samlad registrerings- och inloggningsvy. Registreringen visar förnamn, efternamn, personnummer (tolv siffror), hemkommun från SCB-listan och e-post. Den kontrollerar format, kalenderdatum, Luhn-kontrollsiffra och 16-årsgräns samt visar ålder och juridiskt kön enligt personnumret. Samordningsnummer stöds ännu inte. Kontrollen bevisar inte att personen äger identiteten. Den kan heller inte säkerställa folkbokföringsort. Källhänvisning: https://www.skatteverket.se/privat/folkbokforing/personnummer.html
+
+Vyn är fortfarande en förhandsversion: knapparna ger lokal återkoppling men skapar inget konto och skickar ingen e-post. Inga personuppgifter skrivs till localStorage, sessionStorage, cookies, URL:er eller server från dessa formulär. Formulären hindrar vanlig webbläsarinskickning även om modulen inte kan laddas, och knapparna är initialt inaktiverade. En riktig servermottagare måste återvalidera allt; klientens ålders- eller könsuppgift får aldrig bli verifieringsbevis.
+
+Den planerade inloggningen använder tidsbegränsad e-postlänk. Leverantör, tokenhantering, missbruksskydd och samtyckes-/informationsflöde behöver kopplas in och testas före aktivering.
+
+Färgidentiteterna i `categories.js` används gemensamt av startsidans kategorilänkar, frågemoduler och resultatsektioner. Kategori anges alltid med text och inte enbart färg. Åtta separata textfärger på ljusa bakgrunder är kontrasttestade till minst 4,5:1. Inga nya bildresurser har skapats.

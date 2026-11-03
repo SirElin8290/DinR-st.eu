@@ -1,5 +1,12 @@
 # DinRöst – säkerhets- och integritetsarkitektur
 
+## Aktuell registreringsinriktning, 2026-11-03
+Användaren har valt en första version med förnamn, efternamn, personnummer, hemkommun och e-post samt framtida e-postverifiering. Ingen adress ska begäras. Den nya startsidan och dess lokala format-, ålders- och kontrollsifferkontroller är implementerade. Riktig kontoregistrering, utskick och sessionsinloggning är inte aktiverade. Uppgifter i förhandsvisningen skickas inte eller lagras av applikationen.
+
+Ålder och juridiskt kön beräknas enligt personnumret. Detta bevisar inte att numret är tilldelat användaren eller att hemkommunen stämmer. En tilldelad födelsetid kan i undantagsfall ha en närliggande dag enligt Skatteverket; förnamn, namn och personnummer får inte användas som bevisad identitet utan separat kontroll. Källhänvisning: https://www.skatteverket.se/privat/folkbokforing/personnummer.html
+
+Den tidigare BankID-designen nedan är en målbild för en eventuell starkare verifieringsnivå, inte ett krav eller en beskrivning av den nu publicerade kontovyn. Före riktig insamling krävs fortfarande den dokumenterade dataskydds-, drift- och säkerhetsgranskningen. Namn eller personnummer ska inte tillföras svarstabeller eller publika exporter.
+
 ## Status
 Detta dokument är en säkerhetsdesign för implementation. Ingen verklig BankID-integration eller lagring av känsliga personuppgifter får aktiveras innan BankID-avtal, backendmiljö, rättslig grund, DPIA och extern säkerhetsgranskning är klara.
 

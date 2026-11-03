@@ -1,1 +1,66 @@
-<!doctype html><html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#dfe5cf"><title>DinRöst</title><link rel="icon" type="image/png" href="favicon.png"><link rel="apple-touch-icon" href="favicon.png"><link rel="stylesheet" href="styles.css"><style>body{margin:0}.curtain{min-height:100vh;background:#dfe5cf;display:grid;place-items:center;padding:32px}.curtain-inner{width:min(760px,100%);text-align:center}.curtain-brand{display:inline-flex;align-items:center;gap:12px;font-weight:800;font-size:22px;margin-bottom:70px}.curtain-brand img{width:46px;height:46px;border-radius:11px;display:block}.curtain h1{font-size:clamp(58px,10vw,102px);margin:0 0 22px}.curtain-lead{font-size:20px;max-width:650px;margin:0 auto 38px;color:#505647}.curtain-login{display:inline-block;background:#4f5940;color:white;text-decoration:none;font-weight:800;padding:16px 34px;border-radius:4px;min-width:250px}.curtain-note{font-size:12px;color:#69705e;margin-top:16px}.curtain-rule{width:80px;border:0;border-top:1px solid #aeb79b;margin:48px auto 25px}.curtain-info{font-size:13px;color:#5e6554;max-width:600px;margin:auto}.curtain-footer{margin-top:70px;font-size:11px;letter-spacing:.08em;color:#737a67}@media(max-width:600px){.curtain{padding:24px}.curtain-brand{margin-bottom:55px}.curtain-lead{font-size:17px}}</style></head><body><main class="curtain"><div class="curtain-inner"><div class="curtain-brand"><img src="favicon.png" alt=""><span>DinRöst</span></div><h1>Vad tycker Sverige?</h1><p class="curtain-lead">En oberoende plats för aktuella samhällsfrågor. Utforska åtta frågekategorier och jämför publicerade resultat från deltagarna.</p><a class="curtain-login" href="dashboard.html">Se frågor och statistik</a><p class="curtain-note">Förhandsversion · Insamlingen är inte öppen ännu</p><hr class="curtain-rule"><p class="curtain-info">DinRöst publicerar endast aggregerade resultat. Din individuella röst visas aldrig offentligt.</p><div class="curtain-footer">OBEROENDE · TRANSPARENT · SAKLIG</div></div></main></body></html>
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f5f7fb"><meta name="description" content="DinRöst – åtta samhällsfrågor varje vecka. Skapa konto, ta ställning och följ deltagarnas svar över tid.">
+<title>DinRöst – Din röst. Ett större perspektiv.</title>
+<link rel="icon" href="favicon.png"><link rel="stylesheet" href="design-system.css"><link rel="stylesheet" href="entry.css">
+</head>
+<body class="entry-page">
+<a class="skip-link" href="#konto">Hoppa till inloggning och registrering</a>
+<header class="entry-header">
+ <a class="wordmark" href="index.html" aria-label="DinRöst, startsida">dinröst<span aria-hidden="true">.</span></a>
+ <nav aria-label="Huvudmeny"><a href="#sa-fungerar-det">Så fungerar det</a><a class="entry-login-shortcut" href="index.html?mode=login#konto">Logga in</a><a class="quiet-link" href="dashboard.html">Utforska resultaten <span aria-hidden="true">↗</span></a></nav>
+</header>
+<main class="entry-layout">
+ <section class="entry-story" aria-labelledby="entry-title">
+  <div class="entry-overview">
+  <div class="edition"><span class="edition-dot" aria-hidden="true"></span> DINRÖST · ETT ÖPPET SAMHÄLLSSAMTAL</div>
+  <h1 id="entry-title">Din röst.<br>Ett större<br><span>perspektiv.</span></h1>
+  <p class="entry-lead">Vad tycker vi om samhället vi delar? Ta ställning i åtta frågor varje vecka och följ hur deltagarnas åsikter förändras.</p>
+  <div class="entry-facts"><span><b>08</b> frågor varje vecka</span><span><b>16+</b> för att delta</span><span><b>Öppet</b> att följa resultaten</span></div>
+  </div>
+  <div class="entry-category-block">
+  <div class="category-intro"><h2>Åtta perspektiv på vår gemensamma framtid.</h2><span>En färg. Ett område.</span></div>
+  <div id="entryCategories" class="entry-categories" aria-label="De åtta frågekategorierna"></div>
+  <p class="story-note">Oberoende i upplägget. Öppet med metoden. Varsamt med din information.</p>
+  </div>
+ </section>
+ <section id="konto" class="entry-card" aria-labelledby="account-title">
+  <div class="card-topline"><span>DIN PLATS I SAMTALET</span><span class="card-index" aria-hidden="true">DR / 01</span></div>
+  <h2 id="account-title">Välkommen in.</h2><p class="card-intro">Ett konto. Dina perspektiv. En tydligare bild tillsammans.</p>
+  <div class="preview-notice" role="note"><span class="preview-dot" aria-hidden="true"></span><p><strong>Förhandsversion</strong>Registreringen har inte öppnat. Inga personuppgifter skickas eller sparas av DinRöst i den här vyn.</p></div>
+  <div class="account-tabs" role="tablist" aria-label="Välj kontoflöde">
+   <button type="button" role="tab" id="registerTab" aria-selected="true" aria-controls="registerPanel" tabindex="0">Skapa konto</button>
+   <button type="button" role="tab" id="loginTab" aria-selected="false" aria-controls="loginPanel" tabindex="-1">Logga in</button>
+  </div>
+  <section id="registerPanel" role="tabpanel" aria-labelledby="registerTab">
+   <form id="registrationForm" onsubmit="return false" novalidate>
+    <div class="field-pair">
+     <div class="field"><label for="givenName">Förnamn</label><input id="givenName" autocomplete="given-name" maxlength="80" required placeholder="Ditt förnamn"></div>
+     <div class="field"><label for="familyName">Efternamn</label><input id="familyName" autocomplete="family-name" maxlength="100" required placeholder="Ditt efternamn"></div>
+    </div>
+    <div class="field"><label for="personalNumber">Personnummer</label><input id="personalNumber" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="13" required placeholder="ÅÅÅÅMMDD-XXXX" aria-describedby="personalHelp personalError"><p class="field-help" id="personalHelp">Ange tolv siffror. Vi räknar ut ålder och juridiskt kön enligt personnumret.</p><p class="field-error" id="personalError" aria-live="polite"></p></div>
+    <div class="derived-profile" aria-live="polite"><div><span>Ålder</span><strong id="derivedAge">Fylls i automatiskt</strong></div><div><span>Juridiskt kön</span><strong id="derivedGender">Fylls i automatiskt</strong></div></div>
+    <div class="field"><label for="homeMunicipality">Hemkommun</label><input id="homeMunicipality" list="municipalityOptions" autocomplete="off" required placeholder="Sök eller välj din kommun" aria-describedby="municipalityHelp"><datalist id="municipalityOptions"></datalist><p class="field-help" id="municipalityHelp">Bara din kommun. Vi frågar inte efter din adress.</p></div>
+    <div class="field"><label for="registerEmail">E-postadress</label><input id="registerEmail" type="email" autocomplete="email" maxlength="254" required placeholder="du@exempel.se"><p class="field-help">När tjänsten öppnar bekräftar du din e-post. Den används också för att logga in.</p></div>
+    <button class="account-primary" id="registerButton" type="button" disabled>Skapa konto <span aria-hidden="true">↗</span></button>
+    <p class="account-feedback" id="registerFeedback" role="status"></p>
+   </form>
+   <p class="account-footnote">E-postverifiering bekräftar e-postadressen. Personnummer och hemkommun är självrapporterade uppgifter tills de har verifierats separat.</p>
+  </section>
+  <section id="loginPanel" role="tabpanel" aria-labelledby="loginTab" hidden>
+   <form id="loginForm" onsubmit="return false" novalidate>
+    <div class="login-explanation"><h3>En länk. Sedan är du inne.</h3><p>Det planerade inloggningsflödet använder en tidsbegränsad länk till din e-postadress, så att du slipper komma ihåg ett lösenord.</p></div>
+    <div class="field"><label for="loginEmail">E-postadress</label><input id="loginEmail" type="email" autocomplete="email" maxlength="254" required placeholder="du@exempel.se"></div>
+    <button class="account-primary" id="loginButton" type="button" disabled>Skicka inloggningslänk <span aria-hidden="true">↗</span></button>
+    <p class="account-feedback" id="loginFeedback" role="status"></p>
+   </form>
+  </section>
+  <div class="account-bottom"><span class="privacy-mark" aria-hidden="true">✓</span><p>Dina individuella svar visas inte offentligt.<br><a href="principer.html">Läs om integritet och metod</a></p></div>
+ </section>
+</main>
+<section id="sa-fungerar-det" class="entry-method" aria-labelledby="method-title"><div class="method-heading"><span class="mini-label">SÅ FUNGERAR DINRÖST</span><h2 id="method-title">Ett litet bidrag.<br>En bild som växer.</h2></div><div class="method-steps"><article><span>01 / DELTA</span><h3>Åtta frågor. Varje vecka.</h3><p>Du väljer vilka frågor du vill svara på. Veckans frågor stänger söndag 23.59.59, svensk tid.</p></article><article><span>02 / UTFORSKA</span><h3>Se fler perspektiv.</h3><p>Jämför publicerade resultat över tid och mellan kommuner. Små grupper skyddas.</p></article><article><span>03 / FÖRSTÅ</span><h3>Metoden är en del av svaret.</h3><p>Resultaten beskriver deltagarna på DinRöst. De är inte automatiskt representativa för hela Sverige.</p></article></div></section>
+<footer class="entry-footer"><a class="wordmark" href="index.html">dinröst<span aria-hidden="true">.</span></a><span>Din röst. Ett större perspektiv.</span><a href="dashboard.html">Se frågor och statistik ↗</a><a href="principer.html">Metod & integritet</a><span>© 2026 DinRöst</span></footer>
+<script type="module" src="entry.js"></script>
+</body></html>

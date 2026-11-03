@@ -1,5 +1,6 @@
 import {selectCells,digest} from './worker/src/research.js';
 import {REGIONS,MUNICIPALITIES,GEOGRAPHY_VERSION} from './worker/src/geography.js';
+import {CATEGORIES as VISUAL_CATEGORIES,categoryStyle} from './categories.js';
 const root=document.querySelector('#researchPanel');
 const API=document.querySelector('meta[name="research-api"]')?.content||'';
 const GENDERS={woman:'Kvinna',man:'Man',other:'Annat',not_stated:'Inte angivet',unknown:'Okänd'};
@@ -12,7 +13,14 @@ async function get(path){const r=await fetch(API+path,{credentials:'omit'});if(!
 async function main(){
  const catalog=await fetch('data/research-catalog.json').then(r=>{if(!r.ok)throw Error('Missing catalog');return r.json();});
  const list=document.querySelector('#questionList');list.replaceChildren();
- catalog.questions.forEach((q,i)=>{const a=el('article',undefined,list);a.className='question';const b=el('div',undefined,a);b.className='question-body';el('span',`${i+1}. ${q.category} · UTKAST`,b);el('h3',q.wording,b);el('p','Frågan är ett redaktionellt förslag. Insamling har inte öppnats.',b);});
+ catalog.questions.forEach((q,i)=>{
+  const category=VISUAL_CATEGORIES.find(c=>c.label===q.category),a=el('article',undefined,list);a.className='question';
+  if(category){categoryStyle(a,category);a.id='category-'+category.id;}
+  const header=el('div',undefined,a);header.className='question-module-head';el('span',String(i+1).padStart(2,'0'),header).className='module-index';el('span',q.category,header);el('span','Utkast',header).className='module-state';
+  const b=el('div',undefined,a);b.className='question-body';el('h3',q.wording,b);el('p','Ett perspektiv på en fråga vi delar. Insamlingen har inte öppnats.',b);
+  const foot=el('div',undefined,b);foot.className='question-footer';el('span','Veckans fråga',foot);const link=el('a','Läs frågan ↗',foot);link.href='vote.html?q='+i;
+ });
+ if(location.hash.startsWith('#category-'))requestAnimationFrame(()=>document.getElementById(location.hash.slice(1))?.scrollIntoView());
  root.replaceChildren();el('h2','Jämför svar och hitta gamla frågor',root);
  el('p','Öppet för alla. Resultaten beskriver deltagarna på DinRöst. Urvalet är självrekryterat och resultaten visar inte säkert vad Sveriges befolkning tycker.',root);
  el('p','Åtta frågor per kalendervecka. Måndag 00.00–söndag 23.59.59, svensk tid. Slutliga resultat visas efter granskning.',root);
@@ -56,7 +64,7 @@ async function main(){
   const comparable=selected.length===2&&!shown.some(r=>r.suppressed)&&selected[0].item.comparison_key===selected[1].item.comparison_key&&selected[0].release.policy.version===selected[1].release.policy.version&&selected[0].release.policy.geography_version===selected[1].release.policy.geography_version&&JSON.stringify(shown[0].municipality_codes)===JSON.stringify(shown[1].municipality_codes);
   if(selected.length===2)el('p',comparable?'Samma fråge- och metodversion och samma publicerade kommuner. Skillnader gäller deltagarna vid respektive mättillfälle.':'Fråga, metod, publicerade kommuner eller tillgängligt underlag skiljer sig. Resultaten ska inte tolkas som en direkt jämförbar tidsserie.',output);
   for(const e of selected){
-   const section=el('section',undefined,output);el('h3',`${e.release.wave.id} · ${e.item.category}`,section);el('p',e.item.wording,section);
+   const section=el('section',undefined,output),theme=VISUAL_CATEGORIES.find(c=>c.label===e.item.category);if(theme)categoryStyle(section,theme);el('h3',`${e.release.wave.id} · ${e.item.category}`,section);el('p',e.item.wording,section);
    el('p',`Svarstid: ${format(e.release.wave.opens_at)} till ${format(e.release.wave.closes_at)} (sluttid ingår inte).`,section);
    el('p',e.item.sponsor?`Beställare: ${e.item.sponsor}. Redaktionellt godkänd.`:'Ordinarie fråga utan extern beställare.',section);
    for(const notice of e.notices||[])el('p',`Rättelse ${format(notice.created_at)}: ${notice.note}`,section);
