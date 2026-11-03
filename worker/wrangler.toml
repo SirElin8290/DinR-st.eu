@@ -1,20 +1,43 @@
 name = "dinrost-api"
 main = "src/index.js"
 compatibility_date = "2026-08-01"
+account_id = "926bf7a201cbc5c5170c49226af005d8"
+workers_dev = true
 
 [vars]
-APP_ORIGIN = "https://dinröst.eu"
-MIN_PUBLIC_GROUP = "50"
-AUTH_PROVIDER = "disabled"
+APP_ORIGIN = "https://dinrost-api.soren-johansson-7.workers.dev"
+FRONTEND_ORIGIN = "https://sirelin8290.github.io"
 ENVIRONMENT = "production"
+AUTH_ENABLED = "false"
+REGISTRATION_ENABLED = "false"
+PRIVACY_REVIEWED = "false"
+PRIVACY_VERSION = "account-v1-draft"
+MAIL_PROVIDER = "disabled"
 RESEARCH_COLLECTION_ENABLED = "false"
+OPINION_CONSENT_VERSION = "opinion-v1-draft"
+
+[assets]
+directory = "../.public"
+binding = "ASSETS"
+run_worker_first = true
+
+[triggers]
+crons = ["*/10 * * * *"]
+
+[[d1_databases]]
+binding = "AUTH_DB"
+database_name = "dinrost-auth-prod"
+database_id = "99300475-9426-4ac3-bbe0-6333c842669b"
+# Database created with EU jurisdiction; locality is stored by D1.
+migrations_dir = "auth-migrations"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "dinrost-prod"
-database_id = "REPLACE_WITH_D1_DATABASE_ID"
+database_name = "dinrost-research-prod"
+database_id = "ea9b4976-5b83-4db0-bb27-fcccda4239b7"
+# Database created with EU jurisdiction; locality is stored by D1.
+migrations_dir = "migrations"
 
-# Production secrets (set with wrangler secret put, never commit):
-# SESSION_SECRET
-# SUBJECT_HMAC_SECRET
-# BANKID_API_KEY / BANKID_CERT material when provider is activated
+# Secrets: DATA_ENCRYPTION_KEY, EMAIL_HMAC_KEY, SUBJECT_HMAC_KEY,
+# CSRF_HMAC_KEY, RATE_HMAC_KEY, and (after provider setup) RESEND_API_KEY.
+# MAIL_FROM is set only after the sender domain has been verified.

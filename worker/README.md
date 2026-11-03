@@ -1,53 +1,44 @@
 # DinRöst backend
 
-## Research architecture update, 2026-11-03
+Cloudflare Worker + two D1 databases, with registration, email confirmation,
+passwordless login, private sessions and the versioned research archive.
 
-The research implementation and its launch limitations are documented in
-[`../docs/research-architecture.md`](../docs/research-architecture.md).
-Use `npm test` with Node 24. Local schema/draft/review/open/close/release tools
-are in `scripts/research.mjs`; they never deploy or upload data.
+## Current deployment
 
-Production collection and mock authentication are disabled by default.
-Public research archives use frozen, reviewed aggregates, with no login required.
-The older live result/vote endpoints below are disabled outside development.
-The configuration still contains a placeholder D1 ID; no production deployment
-or end-to-end production verification has been performed.
+- Site/API: https://dinrost-api.soren-johansson-7.workers.dev
+- AUTH_DB: dinrost-auth-prod, EU jurisdiction.
+- DB: dinrost-research-prod, EU jurisdiction.
+- Registration, email delivery and opinion collection are deliberately disabled.
+- No actual outbound email has been tested; the sending address/provider remains to be connected.
 
-The descriptions below concern the original scaffold and must not be read as
-proof of verified identity, a deployed backend, or GDPR approval.
+Full implementation, security boundaries and mail setup:
+[docs/authentication.md](../docs/authentication.md).
+Research model and exports:
+[docs/research-architecture.md](../docs/research-architecture.md).
 
-Cloudflare Worker + D1 scaffold for the production voting service.
+## Commands
 
-## Implemented
-- Server-side sessions with HttpOnly/Secure/SameSite cookies.
-- Pseudonymous identity mapping: external identity subject -> keyed HMAC -> internal random user ID.
-- 16+ gate.
-- Separate profile store.
-- One-person/one-vote enforcement via `vote_receipts`.
-- Ballot table intentionally has no user ID or identity subject.
-- Aggregated result endpoint with minimum-group suppression.
-- Up to eight open questions returned by the API.
-- Demographic/geographic aggregation hooks.
-- Mock auth adapter isolated behind `AUTH_PROVIDER=mock`.
+Node 24 and Wrangler are required.
 
-## Privacy boundary
-`identities` proves uniqueness. `vote_receipts` proves that a user voted on a question. `ballots` stores the answer and aggregate dimensions but no user ID. This prevents ordinary application queries from directly mapping a ballot choice to an identity.
+```text
+npm test
+npm run build
+npm run db:auth:migrate
+npm run db:research:migrate
+npm run deploy
+```
 
-This is pseudonymisation, not mathematical anonymity: timestamps, rare demographic combinations, logs and privileged infrastructure access can still create re-identification risk. Production launch requires a DPIA, retention policy, access controls, log minimisation, penetration testing and legal review.
+The migration commands operate remotely. Use only against the explicitly configured
+DinRöst databases. Original schema.sql and seed.sql are historical scaffold files;
+the deployed service uses auth-migrations/ and migrations/ instead. Do not seed
+synthetic questions, identities or responses into production.
 
-## Deploy
-1. Create a Cloudflare D1 database named `dinrost-prod`.
-2. Put its ID in `wrangler.toml`.
-3. Apply `schema.sql` to the database.
-4. Set `SESSION_SECRET` and `SUBJECT_HMAC_SECRET` as Worker secrets. Use independent high-entropy values.
-5. Deploy the Worker and map it to an API hostname such as `api.dinrost.eu`.
-6. Change `APP_ORIGIN` to the final production origin.
-7. Point the frontend API client to the Worker.
+Secrets are configured separately in Cloudflare. No credentials belong in Git or
+public-config.js. Do not rotate the data/HMAC keys during a normal redeployment.
+MAIL_PROVIDER stays disabled until a verified sender and its API credentials are
+configured. Real registration additionally requires a reviewed, non-draft account
+privacy version. Account email verification is not identity verification or
+consent to political-opinion processing.
 
-## BankID activation
-The current `/api/auth/mock` endpoint is only a development adapter. Production BankID must be implemented server-side using the exact contract, certificates/keys, RP requirements and personal-data fields agreed with the selected BankID integrator/acquirer. Never place BankID private keys, certificates, API secrets or raw identity identifiers in frontend JavaScript or this repository.
-
-Activation should replace the mock adapter while keeping the rest of the identity/session/profile/voting API stable.
-
-## Important
-GitHub Pages cannot run this backend. The Worker and D1 database must be provisioned/deployed separately. Until that is done, the public GitHub Pages site remains a frontend prototype and must not claim that votes are centrally registered.
+GitHub Pages remains an open public frontend. Authenticated work uses the Worker
+origin so that HttpOnly cookies are first-party rather than third-party cookies.

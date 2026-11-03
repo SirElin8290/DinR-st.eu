@@ -1,17 +1,46 @@
 import {researchAPI} from './research.js';
-const json=(data,status=200,headers={})=>new Response(JSON.stringify(data),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store',...headers}});
-const uid=()=>crypto.randomUUID();
-const enc=new TextEncoder();
-async function sha256(v){const b=await crypto.subtle.digest('SHA-256',enc.encode(v));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
-async function hmac(secret,v){const k=await crypto.subtle.importKey('raw',enc.encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);const s=await crypto.subtle.sign('HMAC',k,enc.encode(v));return [...new Uint8Array(s)].map(x=>x.toString(16).padStart(2,'0')).join('')}
-function cors(req,env){const origin=req.headers.get('origin');return origin&&origin===new URL(env.APP_ORIGIN).origin?{'access-control-allow-origin':origin,'access-control-allow-credentials':'true','access-control-allow-headers':'content-type','access-control-allow-methods':'GET,POST,PUT,OPTIONS'}:{}}
-async function body(req){try{return await req.json()}catch{return {}}}
-function cookie(req,name){return (req.headers.get('cookie')||'').split(';').map(x=>x.trim()).find(x=>x.startsWith(name+'='))?.slice(name.length+1)||null}
-async function session(req,env){const raw=cookie(req,'dr_session');if(!raw)return null;const hash=await sha256(raw);return await env.DB.prepare("SELECT s.user_id,p.birth_year,p.municipality_code,p.municipality_name,p.gender,p.employment FROM sessions s LEFT JOIN profiles p ON p.user_id=s.user_id WHERE s.token_hash=? AND s.expires_at>datetime('now')").bind(hash).first()}
-function ageBand(year){const age=new Date().getUTCFullYear()-Number(year);if(age<18)return'16-17';if(age<30)return'18-29';if(age<50)return'30-49';if(age<65)return'50-64';return'65+'}
-async function mockLogin(req,env){if(env.ENVIRONMENT!=='development'||env.AUTH_PROVIDER!=='mock')return json({error:'BankID provider not activated'},503);const d=await body(req);const birthYear=Number(d.birth_year||1990);if(new Date().getUTCFullYear()-birthYear<16)return json({error:'DinRöst requires age 16+'},403);const providerSubject=String(d.mock_subject||'demo-person-1');const subjectHash=await hmac(env.SUBJECT_HMAC_SECRET,providerSubject);let row=await env.DB.prepare('SELECT user_id FROM identities WHERE subject_hash=?').bind(subjectHash).first();const userId=row?.user_id||uid();if(!row)await env.DB.prepare('INSERT INTO identities(subject_hash,user_id,age_verified,last_login_at) VALUES(?,?,1,CURRENT_TIMESTAMP)').bind(subjectHash,userId).run();else await env.DB.prepare('UPDATE identities SET last_login_at=CURRENT_TIMESTAMP WHERE user_id=?').bind(userId).run();await env.DB.prepare('INSERT INTO profiles(user_id,birth_year) VALUES(?,?) ON CONFLICT(user_id) DO UPDATE SET birth_year=excluded.birth_year,updated_at=CURRENT_TIMESTAMP').bind(userId,birthYear).run();const raw=uid()+uid();const tokenHash=await sha256(raw);await env.DB.prepare("INSERT INTO sessions(token_hash,user_id,expires_at) VALUES(?,?,datetime('now','+12 hours'))").bind(tokenHash,userId).run();return json({ok:true,new_user:!row},200,{'set-cookie':`dr_session=${raw}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=43200`})}
-async function saveProfile(req,env,s){const d=await body(req);await env.DB.prepare('UPDATE profiles SET municipality_code=?,municipality_name=?,gender=?,employment=?,updated_at=CURRENT_TIMESTAMP WHERE user_id=?').bind(d.municipality_code||null,d.municipality_name||null,d.gender||null,d.employment||null,s.user_id).run();return json({ok:true})}
-async function questions(env){const {results}=await env.DB.prepare("SELECT id,topic,question_text,context_text,opens_at,closes_at FROM questions WHERE status='open' AND datetime('now') BETWEEN opens_at AND closes_at ORDER BY opens_at DESC LIMIT 8").all();return json({questions:results})}
-async function vote(req,env,s,qid){if(env.ENVIRONMENT!=='development')return json({error:'Legacy collection disabled; use reviewed research API'},410);const d=await body(req);if(!['yes','no','unsure'].includes(d.choice))return json({error:'Invalid choice'},400);const q=await env.DB.prepare("SELECT id FROM questions WHERE id=? AND status='open' AND datetime('now') BETWEEN opens_at AND closes_at").bind(qid).first();if(!q)return json({error:'Question is not open'},404);const profile=await env.DB.prepare('SELECT * FROM profiles WHERE user_id=?').bind(s.user_id).first();if(!profile?.birth_year)return json({error:'Profile incomplete'},409);const exists=await env.DB.prepare('SELECT 1 FROM vote_receipts WHERE user_id=? AND question_id=?').bind(s.user_id,qid).first();if(exists)return json({error:'Already voted'},409);const ballot=uid();const batch=[env.DB.prepare('INSERT INTO vote_receipts(user_id,question_id) VALUES(?,?)').bind(s.user_id,qid),env.DB.prepare('INSERT INTO ballots(ballot_id,question_id,choice,age_band,municipality_code,municipality_name,gender,employment) VALUES(?,?,?,?,?,?,?,?)').bind(ballot,qid,d.choice,ageBand(profile.birth_year),profile.municipality_code,profile.municipality_name,profile.gender,profile.employment)];await env.DB.batch(batch);return json({ok:true,receipt:true})}
-async function results(env,qid,url){if(env.ENVIRONMENT!=='development')return json({error:'Live results disabled; use frozen research releases'},410);const age=url.searchParams.get('age');const municipality=url.searchParams.get('municipality');const gender=url.searchParams.get('gender');const employment=url.searchParams.get('employment');let where='question_id=?',bind=[qid];if(age){where+=' AND age_band=?';bind.push(age)}if(municipality){where+=' AND municipality_code=?';bind.push(municipality)}if(gender){where+=' AND gender=?';bind.push(gender)}if(employment){where+=' AND employment=?';bind.push(employment)}const totalRow=await env.DB.prepare(`SELECT COUNT(*) n FROM ballots WHERE ${where}`).bind(...bind).first();const n=Number(totalRow?.n||0),min=Number(env.MIN_PUBLIC_GROUP||50);if(n<min)return json({suppressed:true,count:null,minimum:min});const {results}=await env.DB.prepare(`SELECT choice,COUNT(*) n FROM ballots WHERE ${where} GROUP BY choice`).bind(...bind).all();return json({suppressed:false,count:n,results})}
-export default{async fetch(req,env){const c=cors(req,env);if(req.method==='OPTIONS')return new Response(null,{status:204,headers:c});const url=new URL(req.url);if(['POST','PUT','DELETE'].includes(req.method)&&req.headers.get('origin')!==new URL(env.APP_ORIGIN).origin)return json({error:'Invalid origin'},403);let res;if(url.pathname.startsWith('/api/research/')){try{res=await researchAPI(req,env,session)}catch{res=json({error:'Research service unavailable'},503)}}else if(url.pathname==='/api/health')res=json({ok:true,auth_provider:env.AUTH_PROVIDER});else if(url.pathname==='/api/auth/mock'&&req.method==='POST')res=await mockLogin(req,env);else if(url.pathname==='/api/questions'&&req.method==='GET')res=await questions(env);else{const s=await session(req,env);if(!s)res=json({error:'Unauthorized'},401);else if(url.pathname==='/api/me'&&req.method==='GET')res=json({user_id:s.user_id,birth_year:s.birth_year,municipality_code:s.municipality_code,municipality_name:s.municipality_name,gender:s.gender,employment:s.employment});else if(url.pathname==='/api/me/profile'&&req.method==='PUT')res=await saveProfile(req,env,s);else if(/^\/api\/questions\/[^/]+\/vote$/.test(url.pathname)&&req.method==='POST')res=await vote(req,env,s,url.pathname.split('/')[3]);else if(/^\/api\/questions\/[^/]+\/results$/.test(url.pathname)&&req.method==='GET')res=await results(env,url.pathname.split('/')[3],url);else res=json({error:'Not found'},404)}const h=new Headers(res.headers);Object.entries(c).forEach(([k,v])=>h.set(k,v));h.set('x-content-type-options','nosniff');h.set('referrer-policy','no-referrer');h.set('permissions-policy','camera=(), microphone=(), geolocation=()');return new Response(res.body,{status:res.status,headers:h})}};
+import {auth,authReadiness} from './auth.js';
+import {MUNICIPALITIES} from './geography.js';
+const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'}});
+function headers(req,env,response){
+ const h=new Headers(response.headers),origin=req.headers.get('origin');
+ const own=new URL(env.APP_ORIGIN).origin;
+ const publicRead=req.method==='GET'&&(new URL(req.url).pathname==='/api/auth/status'||new URL(req.url).pathname.startsWith('/api/research/'));
+ if(origin===own||(publicRead&&origin===env.FRONTEND_ORIGIN))h.set('access-control-allow-origin',origin);
+ if(origin===own){h.set('access-control-allow-credentials','true');h.set('access-control-allow-methods','GET,POST,OPTIONS');h.set('access-control-allow-headers','content-type,x-csrf-token');}
+ h.set('vary','Origin');h.set('x-content-type-options','nosniff');h.set('referrer-policy','no-referrer');h.set('permissions-policy','camera=(), microphone=(), geolocation=()');h.set('x-frame-options','DENY');
+ h.set('strict-transport-security','max-age=31536000');
+ h.set('content-security-policy',"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://dinrost-api.soren-johansson-7.workers.dev; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'");
+ if(new URL(req.url).pathname.startsWith('/api/')||new URL(req.url).pathname==='/complete.html')h.set('cache-control','no-store');
+ return new Response(response.body,{status:response.status,headers:h});
+}
+async function consent(req,env){
+ if(env.RESEARCH_COLLECTION_ENABLED!=='true')return json({error:'Deltagandet är inte öppet ännu.'},503);
+ if(req.method!=='POST'||req.headers.get('origin')!==new URL(env.APP_ORIGIN).origin||!await auth.validCSRF(req,env))return json({error:'Otillåten begäran.'},403);
+ const s=await auth.getSession(req,env);if(!s)return json({error:'Du behöver logga in.'},401);
+ const text=await req.text();if(text.length>1024)return json({error:'För stor begäran.'},413);
+ const d=JSON.parse(text);if(d.accepted!==true||!env.OPINION_CONSENT_VERSION||d.version!==env.OPINION_CONSENT_VERSION)return json({error:'Aktuellt uttryckligt samtycke krävs.'},400);
+ const p=s.profile,geo=MUNICIPALITIES[p.municipality_code];
+ await env.DB.prepare("INSERT INTO research_participants(user_id,verification,age_band,gender,municipality_code,region_code,geography_source,recruitment,consent_version,consented_at) VALUES(?,?,?,?,?,?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET verification=excluded.verification,age_band=excluded.age_band,gender=excluded.gender,municipality_code=excluded.municipality_code,region_code=excluded.region_code,geography_source=excluded.geography_source,consent_version=excluded.consent_version,consented_at=excluded.consented_at,withdrawn_at=NULL").bind(s.user_id,'email_verified',s.age_band,p.legal_gender,p.municipality_code,geo.region,'self_reported','unknown',env.OPINION_CONSENT_VERSION,new Date().toISOString()).run();
+ return json({ok:true});
+}
+export default {
+ async fetch(req,env,ctx){
+  let response;const path=new URL(req.url).pathname;
+  try{
+   if(req.method==='OPTIONS')response=new Response(null,{status:204});
+   else if(path==='/api/health')response=json({ok:true,auth_enabled:authReadiness(env).enabled,research_collection:env.RESEARCH_COLLECTION_ENABLED==='true'});
+   else if(path==='/api/auth/mock')response=json({error:'Mock authentication removed'},410);
+   else if(path.startsWith('/api/auth/'))response=await auth.handle(req,env,ctx);
+   else if(path==='/api/research/consent')response=await consent(req,env);
+   else if(path.startsWith('/api/research/')){
+    if(req.method!=='GET'&&(req.headers.get('origin')!==new URL(env.APP_ORIGIN).origin||!await auth.validCSRF(req,env)))response=json({error:'Ladda om sidan och försök igen.'},403);
+    else response=await researchAPI(req,env,(r,e)=>auth.getSession(r,e));
+   }
+   else if(path.startsWith('/api/'))response=json({error:'Not found'},404);
+   else response=env.ASSETS?await env.ASSETS.fetch(req):json({error:'Not found'},404);
+  }catch{response=json({error:'Tjänsten är tillfälligt otillgänglig. Försök igen senare.'},503);}
+  return headers(req,env,response);
+ },
+ async scheduled(event,env,ctx){ctx.waitUntil(auth.maintain(env));}
+};

@@ -33,7 +33,7 @@
     <h2 id="account-title" tabindex="-1">Välkommen in.</h2><p class="card-intro">Ett konto. Dina perspektiv. En tydligare bild tillsammans.</p>
     <div class="preview-notice" role="note"><span class="preview-dot" aria-hidden="true"></span><p><strong>Förhandsversion</strong>Registreringen har inte öppnat. Inga personuppgifter skickas eller sparas av DinRöst i den här vyn.</p></div>
     <div class="account-tabs" aria-label="Välj kontoflöde"><button type="button" id="registerTab" aria-pressed="true" data-auth-face="register">Skapa konto</button><button type="button" id="loginTab" aria-pressed="false" aria-controls="loginPanel" data-auth-face="login">Logga in</button></div>
-   <form id="registrationForm" onsubmit="return false" novalidate>
+   <form id="registrationForm" novalidate>
     <div class="field-pair">
      <div class="field"><label for="givenName">Förnamn</label><input id="givenName" autocomplete="given-name" maxlength="80" required placeholder="Ditt förnamn"></div>
      <div class="field"><label for="familyName">Efternamn</label><input id="familyName" autocomplete="family-name" maxlength="100" required placeholder="Ditt efternamn"></div>
@@ -42,6 +42,7 @@
     <div class="derived-profile" aria-live="polite"><div><span>Ålder</span><strong id="derivedAge">Fylls i automatiskt</strong></div><div><span>Juridiskt kön</span><strong id="derivedGender">Fylls i automatiskt</strong></div></div>
     <div class="field"><label for="homeMunicipality">Hemkommun</label><input id="homeMunicipality" list="municipalityOptions" autocomplete="off" required placeholder="Sök eller välj din kommun" aria-describedby="municipalityHelp"><datalist id="municipalityOptions"></datalist><p class="field-help" id="municipalityHelp">Bara din kommun. Vi frågar inte efter din adress.</p></div>
     <div class="field"><label for="registerEmail">E-postadress</label><input id="registerEmail" type="email" autocomplete="email" maxlength="254" required placeholder="du@exempel.se"><p class="field-help">När tjänsten öppnar bekräftar du din e-post. Den används också för att logga in.</p></div>
+    <label id="privacyAcceptance" class="consent-check" hidden><input id="registrationPrivacy" type="checkbox" disabled><span>Jag har läst <a href="privacy.html" target="_blank" rel="noopener noreferrer">informationen om kontouppgifter</a>.</span></label>
     <button class="account-primary" id="registerButton" type="button" disabled>Skapa konto <span aria-hidden="true">↗</span></button>
     <p class="account-feedback" id="registerFeedback" role="status"></p>
    </form>
@@ -53,7 +54,7 @@
     <h2 id="login-title" tabindex="-1">Välkommen tillbaka.</h2><p class="card-intro">Fortsätt där du var. Ditt perspektiv behövs.</p>
     <div class="preview-notice" role="note"><span class="preview-dot" aria-hidden="true"></span><p><strong>Förhandsversion</strong>Registreringen har inte öppnat. Inga personuppgifter skickas eller sparas av DinRöst i den här vyn.</p></div>
     <div class="account-tabs" aria-label="Välj kontoflöde"><button type="button" id="backRegisterButton" aria-pressed="false" aria-controls="registerPanel" data-auth-face="register">Skapa konto</button><button type="button" id="backLoginButton" aria-pressed="true" data-auth-face="login">Logga in</button></div>
-   <form id="loginForm" onsubmit="return false" novalidate>
+   <form id="loginForm" novalidate>
     <div class="login-explanation"><h3>En länk. Sedan är du inne.</h3><p>Det planerade inloggningsflödet använder en tidsbegränsad länk till din e-postadress, så att du slipper komma ihåg ett lösenord.</p></div>
     <div class="field"><label for="loginEmail">E-postadress</label><input id="loginEmail" type="email" autocomplete="email" maxlength="254" required placeholder="du@exempel.se"></div>
     <button class="account-primary" id="loginButton" type="button" disabled>Skicka inloggningslänk <span aria-hidden="true">↗</span></button>

@@ -139,3 +139,7 @@ Färgidentiteterna i `categories.js` används gemensamt av startsidans kategoril
 Kontovyn använder samma princip som DinPuls: registrering på framsidan och inloggning på baksidan av ett gemensamt kort. Logga in roterar kortet -180 grader runt Y-axeln (höger till vänster); Skapa konto vänder tillbaka. Höjden följer den aktiva sidans innehåll och anpassas även vid omflöde och felmeddelanden.
 
 Den inaktiva sidan är inert och aria-hidden så att dess fält inte nås med tangentbord eller skärmläsare. Fokus flyttas till den aktiva sidans växlingsknapp efter vändningen. Reducerad rörelse ger ett direkt sidbyte utan rotation. Befintliga fältvärden bevaras vid vändning, medan den tidigare rensningen vid navigering fortfarande gäller. Vanligt besök på startsidan visar registreringen; direktlänken med mode=login visar baksidan. Inget insamlings- eller inloggningssystem aktiveras av animationen.
+
+## Kontodatabaser och backend, 2026-11-03
+
+Efter den tidigare inventeringen har två nya D1-databaser skapats med EU-jurisdiktion och versionsspårade scheman. Konto-Workern är driftsatt på https://dinrost-api.soren-johansson-7.workers.dev. Registrering, utskick och opinionsinsamling är fortsatt avstängda. Konto- och inloggningskedjan, nycklar, e-postadapter och återstående aktivering beskrivs i `authentication.md`. De tidigare formulärens lokala förhandsläge finns kvar tills tjänstens beredskapsspärr öppnas.

@@ -1,6 +1,8 @@
 import {CATEGORIES,categoryStyle} from './categories.js';
 import {MUNICIPALITIES,REGIONS} from './worker/src/geography.js';
 import {parsePersonalNumber} from './worker/src/personal-number.js';
+import {getAuthStatus,authRequest,onAuthOrigin,openSecureAccount} from './auth-client.js';
+let authState={enabled:false};
 
 const tiles=document.querySelector('#entryCategories');
 for(const category of CATEGORIES){
@@ -53,18 +55,45 @@ const municipality=document.querySelector('#homeMunicipality'),municipalityHelp=
 function validateMunicipality(){const row=byName.get(municipality.value.trim().toLocaleLowerCase('sv'));municipality.setCustomValidity(row?'':'Välj en kommun i listan.');municipalityHelp.textContent=row?REGIONS[row.region]+' · Ingen gatuadress behövs.':'Bara din kommun. Vi frågar inte efter din adress.';return row;}
 municipality.addEventListener('input',()=>{validateMunicipality();feedback.textContent='';});municipality.addEventListener('change',validateMunicipality);
 const registration=document.querySelector('#registrationForm'),login=document.querySelector('#loginForm');
-// These views deliberately have no fetch, storage, analytics or submission path.
-// Actual registration requires the reviewed server and e-mail verification flow.
+// No credentials or profile data are persisted in browser storage.
+// State-changing requests are allowed only on the backend's own origin.
 registration.addEventListener('submit',e=>e.preventDefault());login.addEventListener('submit',e=>e.preventDefault());
-document.querySelector('#registerButton').addEventListener('click',()=>{
+document.querySelector('#registerButton').addEventListener('click',async()=>{
+ if(authState.enabled&&!onAuthOrigin()){openSecureAccount('register');return;}
  updatePersonalNumber(true);validateMunicipality();
  for(const id of ['givenName','familyName']){const field=document.querySelector('#'+id);field.setCustomValidity(field.value.trim()?'':'Fyll i ditt namn.');}
  if(!registration.reportValidity())return;
- feedback.textContent='Uppgifterna är kontrollerade på den här enheten. Registreringen är inte öppen ännu. Inget konto har skapats och inga uppgifter har skickats eller sparats.';
+ if(!authState.enabled){feedback.textContent='Uppgifterna är kontrollerade på den här enheten. Registreringen är inte öppen ännu. Inget konto har skapats och inga uppgifter har skickats eller sparats.';return;}
+ const button=document.querySelector('#registerButton');button.disabled=true;
+ try{
+  const result=await authRequest('/api/auth/register',{first_name:document.querySelector('#givenName').value,last_name:document.querySelector('#familyName').value,personal_number:pnr.value,municipality_code:validateMunicipality().code,email:document.querySelector('#registerEmail').value,accepted_privacy:document.querySelector('#registrationPrivacy').checked,privacy_version:authState.privacy_version});
+  registration.reset();updatePersonalNumber();feedback.textContent=result.message+' Länken gäller i 20 minuter och öppnas i samma webbläsare.';
+ }catch(error){feedback.textContent=error.message;}finally{button.disabled=false;}
 });
-document.querySelector('#loginButton').addEventListener('click',()=>{if(!login.reportValidity())return;document.querySelector('#loginFeedback').textContent='Inloggningen har inte öppnat ännu. Ingen inloggningslänk har skickats och e-postadressen har inte sparats.';});
+document.querySelector('#loginButton').addEventListener('click',async()=>{
+ if(authState.enabled&&!onAuthOrigin()){openSecureAccount('login');return;}
+ if(!login.reportValidity())return;const status=document.querySelector('#loginFeedback');
+ if(!authState.enabled){status.textContent='Inloggningen har inte öppnat ännu. Ingen inloggningslänk har skickats och e-postadressen har inte sparats.';return;}
+ const button=document.querySelector('#loginButton');button.disabled=true;
+ try{const result=await authRequest('/api/auth/request-link',{email:document.querySelector('#loginEmail').value});login.reset();status.textContent=result.message+' Länken gäller i 20 minuter och öppnas i samma webbläsare.';}
+ catch(error){status.textContent=error.message;}finally{button.disabled=false;}
+});
 ['givenName','familyName'].forEach(id=>document.querySelector('#'+id).addEventListener('input',e=>e.target.setCustomValidity('')));
 document.querySelectorAll('.account-primary').forEach(button=>button.disabled=false);
+getAuthStatus().then(state=>{
+ authState=state;if(!state.enabled)return;
+ const own=onAuthOrigin();
+ document.querySelectorAll('.preview-notice p').forEach(p=>{p.replaceChildren();const title=document.createElement('strong');title.textContent=own?'E-postverifiering':'Säker kontosida';p.append(title,document.createTextNode(own?'Vi skickar en engångslänk till din e-post. Bekräfta den i samma webbläsare.':'Registrering och inloggning sker på DinRösts säkra kontosida. Fortsätt med knappen nedan.'));});
+ if(!own){
+  registration.querySelectorAll('input').forEach(input=>input.disabled=true);login.querySelectorAll('input').forEach(input=>input.disabled=true);
+  document.querySelector('#registerButton').textContent='Fortsätt till säker registrering ↗';document.querySelector('#loginButton').textContent='Fortsätt till säker inloggning ↗';
+ }else{
+  document.querySelector('#privacyAcceptance').hidden=false;const accepted=document.querySelector('#registrationPrivacy');accepted.disabled=false;accepted.required=true;
+  document.querySelector('#registerEmail').parentElement.querySelector('.field-help').textContent='Vi skickar en länk för att bekräfta adressen. Den används också för inloggning.';
+  document.querySelector('.login-explanation p').textContent='Du får en tidsbegränsad engångslänk till din e-postadress, så att du slipper komma ihåg ett lösenord.';
+  if(!state.registration_enabled){document.querySelector('#registerButton').disabled=true;document.querySelector('#registerButton').textContent='Nyregistreringen är stängd';}
+ }
+}).catch(()=>{/* Keep the existing local preview when the backend is unavailable. */});
 // Do not retain a filled form in browser back/forward cache.
 window.addEventListener('pagehide',()=>{registration.reset();login.reset();});
 window.addEventListener('pageshow',event=>{if(event.persisted){registration.reset();login.reset();updatePersonalNumber();}});

@@ -5,3 +5,5 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
 
 .brand.wordmark{font-size:26px;letter-spacing:-.075em}.trust-grid article{background:#fff!important;border-radius:12px}.trust-rule{background:#edf2fa!important;border-left-color:#355ed8!important;border-radius:0 10px 10px 0}
+
+.account-session{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:22px;padding:14px 16px;border:1px solid #dce3ec;background:#fff;border-radius:10px;font-size:12px}.account-session>span{margin-right:auto}.account-session button{padding:8px 12px;border:1px solid #dce3ec;border-radius:7px;background:#f4f6fa;color:#203551;cursor:pointer;font-size:11px}

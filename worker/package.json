@@ -3,13 +3,14 @@
   "private": true,
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
-    "db:init": "wrangler d1 execute dinrost-prod --remote --file=./schema.sql",
-    "db:seed": "wrangler d1 execute dinrost-prod --remote --file=./seed.sql",
+    "deploy": "npm run build && wrangler deploy",
     "test": "node --test test/*.test.js",
     "research:init": "node scripts/research.mjs init",
     "research:draft": "node scripts/research.mjs draft",
-    "research:release": "node scripts/research.mjs release"
+    "research:release": "node scripts/research.mjs release",
+    "build": "node scripts/build-assets.mjs",
+    "db:auth:migrate": "wrangler d1 migrations apply AUTH_DB --remote",
+    "db:research:migrate": "wrangler d1 migrations apply DB --remote"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
